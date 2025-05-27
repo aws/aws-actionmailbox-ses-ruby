@@ -8,16 +8,8 @@ gem 'rake', require: false
 
 case ENV.fetch('RAILS_VERSION', nil)
 when '7.1'
-  gem 'activerecord-jdbc-adapter', '~> 71.0',
-      platform: :jruby,
-      # this is not published for some reason
-      git: 'https://github.com/jruby/activerecord-jdbc-adapter',
-      glob: 'activerecord-jdbc-adapter.gemspec'
-  gem 'activerecord-jdbcsqlite3-adapter', '~> 71.0',
-      platform: :jruby,
-      # this is not published for some reason
-      git: 'https://github.com/jruby/activerecord-jdbc-adapter',
-      glob: 'activerecord-jdbcsqlite3-adapter/activerecord-jdbcsqlite3-adapter.gemspec'
+  gem 'activerecord-jdbc-adapter', '~> 71.0', platform: :jruby
+  gem 'activerecord-jdbcsqlite3-adapter', '~> 71.0', platform: :jruby
   gem 'rails', '~> 7.1.0'
 when '7.2'
   gem 'rails', '~> 7.2.0'
