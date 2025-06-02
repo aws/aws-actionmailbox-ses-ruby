@@ -24,16 +24,11 @@ jobs:
         rails: [7.1, 7.2, '8.0', main]
 
         exclude:
-          # Rails 7.1 is Ruby >= 2.7
-          - rails: 7.1
-            ruby: jruby-10.0
           # Rails 7.2 is Ruby >= 3.1
           - rails: 7.2
             ruby: 2.7
           - rails: 7.2
             ruby: 3.0
-          - rails: 7.2
-            ruby: jruby-10.0
           # Rails 8.0 is Ruby >= 3.2
           - rails: '8.0'
             ruby: 2.7
@@ -60,6 +55,13 @@ jobs:
             ruby: jruby-9.4
           - rails: main
             ruby: jruby-9.4
+          - rails: 7.2
+            ruby: jruby-10.0
+          - rails: '8.0'
+            ruby: jruby-10.0
+          - rails: main
+            ruby: jruby-10.0
+
 
     steps:
       - uses: actions/checkout@v4
