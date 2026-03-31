@@ -44,7 +44,8 @@ module ActionMailbox
 
         def verify_authenticity
           return head :bad_request unless notification.present?
-          return head :unauthorized unless notification.verified?
+
+          head :unauthorized unless notification.verified?
         end
 
         def confirm_subscription
@@ -59,7 +60,7 @@ module ActionMailbox
           return if valid_topic == notification.topic
 
           Rails.logger.warn("Ignoring unknown topic: #{topic}")
-          return head :unauthorized
+          head :unauthorized
         end
 
         def notification
