@@ -12,17 +12,17 @@ describe 'error handling', type: :request do
 
   context 'when request body is empty' do
     it 'does not raise DoubleRenderError' do
-      expect {
+      expect do
         post inbound_email_url, params: '', headers: { 'Content-Type' => 'application/json' }
-      }.not_to raise_error
+      end.not_to raise_error
     end
   end
 
   context 'when request body is invalid JSON' do
     it 'does not raise DoubleRenderError' do
-      expect {
+      expect do
         post inbound_email_url, params: 'not json', headers: { 'Content-Type' => 'application/json' }
-      }.not_to raise_error
+      end.not_to raise_error
     end
   end
 
