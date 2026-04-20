@@ -16,12 +16,8 @@ when '7.1'
 when '7.2'
   gem 'rails', '~> 7.2.0'
 when '8.0'
-  gem 'activerecord-jdbc-adapter', platform: :jruby
-  gem 'activerecord-jdbcsqlite3-adapter', platform: :jruby
   gem 'rails', '~> 8.0.0'
 else
-  gem 'activerecord-jdbc-adapter', platform: :jruby
-  gem 'activerecord-jdbcsqlite3-adapter', platform: :jruby
   gem 'rails', github: 'rails/rails'
 end
 

@@ -57,6 +57,12 @@ jobs:
             ruby: jruby-9.4
           - rails: 7.2
             ruby: jruby-10.0
+          # JRuby-10.0 is expected to fail since Rails 8 is supported yet
+          # see: https://blog.jruby.org/2025/04/jruby-10-part-1-whats-new
+          - rails: '8.0'
+            ruby: jruby-10.0
+          - rails: main
+            ruby: jruby-10.0
 
     steps:
       - uses: actions/checkout@v6
