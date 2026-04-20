@@ -4,6 +4,8 @@ source 'https://rubygems.org'
 
 gemspec
 
+gem 'faraday-retry'
+
 gem 'rake', require: false
 
 case ENV.fetch('RAILS_VERSION', nil)
