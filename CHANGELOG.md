@@ -1,6 +1,11 @@
 Unreleased Changes
 ------------------
 
+0.1.2 (2026-04-20)
+------------------
+
+* Feature - Support client-side-encrypted inbound objects via configurable `s3_client`, with optional `decrypt_fallback_to_plain` for mixed buckets (#5)
+
 0.1.1 (2026-03-31)
 ------------------
 

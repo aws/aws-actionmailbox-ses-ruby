@@ -74,6 +74,52 @@ a list of subscribed topics; messages from unrecognized topics will be ignored.
 
 See [ActionMailbox documentation](https://guides.rubyonrails.org/action_mailbox_basics.html) for full usage information.
 
+### Decrypting client-side-encrypted objects (SES with KMS)
+
+If `config.action_mailbox.ses.s3_client` is not set, the gem uses the default
+plain `Aws::S3::Client` — identical to the pre-0.1.2 behavior. The settings
+below only kick in when you configure a custom client.
+
+When the SES receipt rule specifies a KMS key on its S3 action, SES uses the
+[Amazon S3 encryption client](https://docs.aws.amazon.com/amazon-s3-encryption-client/latest/developerguide/what-is-s3-encryption-client.html)
+to client-side-encrypt the email body with AES-GCM before upload. Plain
+`Aws::S3::Client.get_object` returns the ciphertext unchanged — `Mail` can't
+parse it. Configure a pre-built encryption client:
+
+```ruby
+# config/initializers/action_mailbox_ses.rb
+require 'aws-sdk-s3/encryption_v2'
+
+Rails.application.config.action_mailbox.ses.s3_client =
+  Aws::S3::EncryptionV2::Client.new(
+    kms_key_id: ENV.fetch('SES_INBOUND_CMK_ARN'),
+    key_wrap_schema: :kms_context,
+    content_encryption_schema: :aes_gcm_no_padding,
+    security_profile: :v2_and_legacy,
+    region: ENV.fetch('AWS_REGION', 'us-east-1')
+  )
+```
+
+Set `SES_INBOUND_CMK_ARN` to the ARN of your AWS KMS key.
+
+#### Mixed buckets (encrypted + unencrypted objects)
+
+If your bucket holds both encrypted and unencrypted objects (e.g. during a
+migration window or when re-driving older mail), opt into per-object routing:
+
+```ruby
+Rails.application.config.action_mailbox.ses.decrypt_fallback_to_plain = true
+```
+
+When enabled, the gem issues a HEAD probe before each fetch and picks the
+plain client for objects that lack `x-amz-key-v2` / `x-amz-key` metadata.
+Off by default.
+
+AWS IAM policy requirements:
+- `s3:GetObject` on the bucket
+- `kms:Decrypt` on the CMK SES used to encrypt
+- `s3:HeadObject` if `decrypt_fallback_to_plain = true`
+
 ## Testing
 
 Two _RSpec_ _request spec_ helpers are provided to facilitate testing

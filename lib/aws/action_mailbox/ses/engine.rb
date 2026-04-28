@@ -9,6 +9,8 @@ module Aws
       class Engine < ::Rails::Engine
         config.action_mailbox.ses = ActiveSupport::OrderedOptions.new
         config.action_mailbox.ses.s3_client_options ||= {}
+        config.action_mailbox.ses.s3_client ||= nil
+        config.action_mailbox.ses.decrypt_fallback_to_plain ||= false
 
         initializer 'aws-sdk-rails.mount_engine' do |app|
           app.routes.append do

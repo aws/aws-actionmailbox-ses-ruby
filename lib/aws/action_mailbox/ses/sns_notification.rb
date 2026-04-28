@@ -49,11 +49,18 @@ module Aws
         end
 
         def s3_content
-          S3Client
-            .client
+          fetch_client
             .get_object(key: key, bucket: bucket)
             .body
             .string
+        end
+
+        def fetch_client
+          cfg = ::Rails.configuration.action_mailbox.ses
+          return S3Client.client unless cfg.decrypt_fallback_to_plain && cfg.s3_client
+
+          meta = S3Client.client_plain.head_object(key: key, bucket: bucket).metadata || {}
+          meta.key?('x-amz-key-v2') || meta.key?('x-amz-key') ? S3Client.client : S3Client.client_plain
         end
 
         def message

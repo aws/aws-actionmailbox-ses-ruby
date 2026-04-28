@@ -9,7 +9,11 @@ module Aws
       class S3Client
         class << self
           def client
-            @client ||= build_client
+            @client ||= ::Rails.configuration.action_mailbox.ses.s3_client || build_client
+          end
+
+          def client_plain
+            @client_plain ||= build_client
           end
 
           private
