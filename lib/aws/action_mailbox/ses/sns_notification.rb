@@ -65,7 +65,8 @@ module Aws
         end
 
         def destination
-          message.dig(:mail, :destination)&.first
+          # receipt.recipients is the envelope RCPT TO. mail.destination is the visible To/Cc.
+          message.dig(:receipt, :recipients)&.first || message.dig(:mail, :destination)&.first
         end
 
         def action
