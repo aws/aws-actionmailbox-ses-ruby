@@ -1,6 +1,8 @@
 Unreleased Changes
 ------------------
 
+* Fix - Include the SES envelope recipient as `X-Original-To` when the message body is stored in S3.
+
 0.2.0 (2026-04-28)
 ------------------
 
