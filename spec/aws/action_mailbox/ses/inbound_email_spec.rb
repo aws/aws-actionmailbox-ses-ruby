@@ -35,7 +35,8 @@ describe 'inbound email', type: :request do
     expect(response).to have_http_status(:no_content)
 
     inbound_email = ActionMailbox::InboundEmail.last
-    expect(s3_email).to eq(inbound_email.raw_email.download)
+    expect(inbound_email.raw_email.download).to eq("X-Original-To: recipient@example.com\n#{s3_email}")
+    expect(inbound_email.mail['X-Original-To'].value).to eq('recipient@example.com')
   end
 
   describe 'configurable s3_client' do
