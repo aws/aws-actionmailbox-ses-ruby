@@ -1,6 +1,8 @@
 Unreleased Changes
 ------------------
 
+* Fix - Fetch an S3-stored email once per request instead of once for the presence check and again for ingestion.
+
 0.2.0 (2026-04-28)
 ------------------
 

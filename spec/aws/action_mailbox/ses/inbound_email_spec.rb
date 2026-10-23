@@ -38,6 +38,19 @@ describe 'inbound email', type: :request do
     expect(s3_email).to eq(inbound_email.raw_email.download)
   end
 
+  it 'fetches an s3-stored email from s3 once' do
+    s3_client = Aws::S3::Client.new(stub_responses: true)
+    s3_client.stub_responses(:get_object, { body: fixture_for(:s3_email, type: :txt) })
+    allow(Aws::S3::Client).to receive(:new).and_return(s3_client)
+    Aws::ActionMailbox::SES::S3Client.instance_variable_set(:@client, nil)
+
+    expect(s3_client).to receive(:get_object).once.and_call_original
+
+    post inbound_email_url, params: JSON.parse(fixture_for(:inbound_email_s3, type: :json)), as: :json
+
+    expect(response).to have_http_status(:no_content)
+  end
+
   describe 'configurable s3_client' do
     let(:s3_email) { fixture_for(:s3_email, type: :txt) }
     let(:s3_payload) { JSON.parse(fixture_for(:inbound_email_s3, type: :json)) }
