@@ -1,6 +1,8 @@
 Unreleased Changes
 ------------------
 
+* Fix - Pass S3-stored emails to Action Mailbox as binary so 8-bit bytes don't fail the request.
+
 0.2.0 (2026-04-28)
 ------------------
 
