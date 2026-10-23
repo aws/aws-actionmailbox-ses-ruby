@@ -26,6 +26,16 @@ describe 'error handling', type: :request do
     end
   end
 
+  context 'when request body is not a JSON object' do
+    it 'returns bad request' do
+      post inbound_email_url, params: 'not json', headers: { 'Content-Type' => 'application/json' }
+      expect(response).to have_http_status(:bad_request)
+
+      post inbound_email_url, params: '[]', headers: { 'Content-Type' => 'application/json' }
+      expect(response).to have_http_status(:bad_request)
+    end
+  end
+
   context 'when notification has an invalid signature' do
     it 'returns unauthorized without raising DoubleRenderError' do
       post inbound_email_url,

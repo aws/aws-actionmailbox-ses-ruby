@@ -1,6 +1,8 @@
 Unreleased Changes
 ------------------
 
+* Fix - Return 400 Bad Request for request bodies that are not a JSON object.
+
 0.2.0 (2026-04-28)
 ------------------
 
