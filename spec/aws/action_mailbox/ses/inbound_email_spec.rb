@@ -54,6 +54,18 @@ describe 'inbound email', type: :request do
       Rails.configuration.action_mailbox.ses.decrypt_fallback_to_plain = false
     end
 
+    it 'fetches an s3-stored email from s3 once' do
+      s3_client = Aws::S3::Client.new(stub_responses: true)
+      s3_client.stub_responses(:get_object, { body: s3_email })
+      allow(Aws::S3::Client).to receive(:new).and_return(s3_client)
+
+      expect(s3_client).to receive(:get_object).once.and_call_original
+
+      post inbound_email_url, params: s3_payload, as: :json
+
+      expect(response).to have_http_status(:no_content)
+    end
+
     it 'uses the configured s3_client for every fetch (fallback disabled)' do
       custom = Aws::S3::Client.new(stub_responses: true)
       custom.stub_responses(:get_object, { body: s3_email })
