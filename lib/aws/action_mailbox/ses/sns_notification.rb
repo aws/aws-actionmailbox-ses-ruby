@@ -53,6 +53,7 @@ module Aws
             .get_object(key: key, bucket: bucket)
             .body
             .string
+            .b
         end
 
         def fetch_client
