@@ -105,5 +105,17 @@ describe 'inbound email', type: :request do
       post inbound_email_url, params: s3_payload, as: :json
       expect(response).to have_http_status(:no_content)
     end
+
+    it 'receives an inbound email from s3 with 8-bit bytes' do
+      eight_bit_email = "#{s3_email}caf\xE9\n".b
+      default = Aws::S3::Client.new(stub_responses: true)
+      default.stub_responses(:get_object, { body: eight_bit_email })
+      allow(Aws::S3::Client).to receive(:new).and_return(default)
+
+      post inbound_email_url, params: s3_payload, as: :json
+
+      expect(response).to have_http_status(:no_content)
+      expect(ActionMailbox::InboundEmail.last.raw_email.download.b).to eq(eight_bit_email)
+    end
   end
 end
