@@ -28,14 +28,16 @@ module Aws
         end
 
         def message_content
-          raise MessageContentError, 'Incoming emails must have notificationType `Received`' unless receipt?
+          @message_content ||= begin
+            raise MessageContentError, 'Incoming emails must have notificationType `Received`' unless receipt?
 
-          if content_in_s3?
-            s3_content
-          else
-            return message[:content] unless destination
-
-            "X-Original-To: #{destination}\n#{message[:content]}"
+            if content_in_s3?
+              s3_content
+            elsif destination
+              "X-Original-To: #{destination}\n#{message[:content]}"
+            else
+              message[:content]
+            end
           end
         end
 
