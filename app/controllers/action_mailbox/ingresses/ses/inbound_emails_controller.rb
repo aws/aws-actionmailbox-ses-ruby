@@ -43,7 +43,7 @@ module ActionMailbox
         private
 
         def verify_authenticity
-          return head :bad_request unless notification.present?
+          return head :bad_request unless notification.valid?
 
           head :unauthorized unless notification.verified?
         end

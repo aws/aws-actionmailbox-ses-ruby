@@ -11,6 +11,10 @@ module Aws
           @request_body = request_body
         end
 
+        def valid?
+          notification.is_a?(Hash)
+        end
+
         def subscription_confirmed?
           (200..299).cover?(confirmation_response.code.to_i)
         end
