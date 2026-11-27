@@ -30,13 +30,10 @@ module Aws
         def message_content
           raise MessageContentError, 'Incoming emails must have notificationType `Received`' unless receipt?
 
-          if content_in_s3?
-            s3_content
-          else
-            return message[:content] unless destination
+          body = content_in_s3? ? s3_content : message[:content]
+          return body unless destination
 
-            "X-Original-To: #{destination}\n#{message[:content]}"
-          end
+          "X-Original-To: #{destination}\n#{body}"
         end
 
         private
@@ -68,7 +65,8 @@ module Aws
         end
 
         def destination
-          message.dig(:mail, :destination)&.first
+          # receipt.recipients is the envelope RCPT TO. mail.destination is the visible To/Cc.
+          message.dig(:receipt, :recipients)&.first || message.dig(:mail, :destination)&.first
         end
 
         def action
